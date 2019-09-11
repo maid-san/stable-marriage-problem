@@ -83,7 +83,7 @@ def run (preference):
         graph = create_graph(preference)
         subgraph = create_subgraph(preference, graph)
         cycles = list(nx.simple_cycles(subgraph))
-        print("cycles: " + str(cycles))
+        # print("cycles: " + str(cycles))
         if len(cycles) == 0:
             break
         delete_point = list(set(cycles[0]) & set(woman_best_point))
@@ -91,21 +91,3 @@ def run (preference):
 
         i += len(cycles)
     return i
-
-
-preference = [
-    [
-        [1, 2, 3, 4],
-        [2, 1, 4, 3],
-        [3, 4, 1, 2],
-        [4, 3, 2, 1]
-    ],
-    [
-        [4, 3, 2, 1],
-        [3, 4, 1, 2],
-        [2, 1, 4, 3],
-        [1, 2, 3, 4]
-    ]
-]
-
-print("count of stable matching: " + str(run(preference)))
