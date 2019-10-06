@@ -118,13 +118,9 @@ class GraphSolver:
         pref = self.reflesh_preference(pref, delete_point)
 
         while True:
-            # print("[Debug] pref: " + str(pref))
             graph    = self.create_graph(pref)
             subgraph = self.create_subgraph(pref, graph)
-            # print("[Debug] graph: "    + str(list(graph.nodes())))
-            # print("[Debug] subgraph: " + str(list(subgraph.nodes())))
             cycles = list(nx.simple_cycles(subgraph))
-            # print("[Debug] cycles: " + str(cycles))
             if len(cycles) == 0:
                 break
             delete_point = list(set(cycles[0]) & set(self.get_woman_best_point(pref)))
