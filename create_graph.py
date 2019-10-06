@@ -65,7 +65,7 @@ class GraphSolver:
 
         return ret
 
-    def contract_graph (self, graph, man_best_point, woman_best_point):
+    def contract_graph(self, graph, man_best_point, woman_best_point):
         ret = copy.deepcopy(graph)
         delete = []
 
@@ -110,7 +110,7 @@ class GraphSolver:
 
         return ret
 
-    def how_many_stable_matching (self):
+    def how_many_stable_matching(self):
         pref = copy.deepcopy(self.preference)
         i = 1
 
