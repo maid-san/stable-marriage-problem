@@ -1007,16 +1007,17 @@ preferences = [
         ]
     ],
 
+    # P(4, 67)
     [
         [
             [1, 2, 3, nan],
             [nan, 1, 2, 3],
-            [nan, 2, 1, nan],
-            [4, 3, 2, 1]
+            [3, 2, 1, nan],
+            [nan, 3, 2, 1]
         ],
         [
-            [2, nan, nan, 1],
-            [2, 4, 1, 3],
+            [2, nan, 1, nan],
+            [2, 4, 3, 1],
             [1, 3, 4, 2],
             [nan, 1, nan, 2]
         ]
@@ -1069,10 +1070,10 @@ preferences = [
 
     [
         [
-            [1, 2, 3, 4],
-            [3, 1, nan, 2],
-            [nan, 3, 1, 2],
-            [nan, nan, 2, 1]
+            [1, 2, 3, nan],
+            [nan, 1, nan, 2],
+            [4, 3, 1, 2],
+            [nan, 3, 2, 1]
         ],
         [
             [2, nan, 1, nan],
@@ -6887,6 +6888,7 @@ preferences = [
         ]
     ],
 
+    # 10 Stable Matching Norm-Expression
     [
         [
             [1, 2, 3, 4],
@@ -6948,5 +6950,14 @@ preferences = [
     ]
 ]
 
+"""
+result = [0] * 10
 for i, preference in enumerate(preferences):
-    print(str(i) + ": count of stable matching: " + str(run(preference)))
+    print("P(4, " + str(i) + "): " + str(run(preference)))
+    result[run(preference) - 1] += 1
+
+print("------- RESULT -------")
+for i, r in enumerate(result):
+    print(str(i + 1) + ": " + str(r))
+"""
+print(run(preferences[459]))
