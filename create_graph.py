@@ -9,6 +9,26 @@ class GraphSolver:
         self.preference = pref
         self.size = len(pref[0][0])
 
+    def get_man_best_point(self, pref):
+        ret = []
+
+        for number, man_row in enumerate(pref[0]):
+            for i, rank in enumerate(man_row):
+                if rank == 1:
+                    ret.append(number * self.size + i)
+
+        return ret
+
+    def get_woman_best_point(self, pref):
+        ret = []
+
+        for number, woman_row in enumerate(pref[1]):
+            for i, rank in enumerate(woman_row):
+                if rank == 1:
+                    ret.append(number + i * self.size)
+
+        return ret
+
     def create_graph(self, pref):
         """
         create Stable Marriage Problem Graph from preference list
@@ -31,40 +51,6 @@ class GraphSolver:
 
         return ret
 
-    def create_subgraph(self, pref, graph):
-        """
-        create subgraph(only woman's best and next good point) from master graph
-        """
-        ret = copy.deepcopy(graph)
-
-        for number, woman_row in enumerate(pref[1]):
-            for i, rank in enumerate(woman_row):
-                if not math.isnan(rank):
-                    if rank != 1 and rank != 2:
-                        ret.remove_node(number + i * self.size)
-
-        return ret
-
-    def get_man_best_point(self, pref):
-        ret = []
-
-        for number, man_row in enumerate(pref[0]):
-            for i, rank in enumerate(man_row):
-                if rank == 1:
-                    ret.append(number * self.size + i)
-
-        return ret
-
-    def get_woman_best_point(self, pref):
-        ret = []
-
-        for number, woman_row in enumerate(pref[1]):
-            for i, rank in enumerate(woman_row):
-                if rank == 1:
-                    ret.append(number + i * self.size)
-
-        return ret
-
     def contract_graph(self, graph, man_best_point, woman_best_point):
         ret = copy.deepcopy(graph)
         delete = []
@@ -84,6 +70,20 @@ class GraphSolver:
             ret.remove_node(d)
 
         return ret, delete
+
+    def create_subgraph(self, pref, graph):
+        """
+        create subgraph(only woman's best and next good point) from master graph
+        """
+        ret = copy.deepcopy(graph)
+
+        for number, woman_row in enumerate(pref[1]):
+            for i, rank in enumerate(woman_row):
+                if not math.isnan(rank):
+                    if rank != 1 and rank != 2:
+                        ret.remove_node(number + i * self.size)
+
+        return ret
 
     def reflesh_preference(self, pref, delete):
         ret = copy.deepcopy(pref)
