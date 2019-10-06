@@ -30,7 +30,7 @@ class GraphSolver:
 
     def create_graph(self, pref):
         """
-        create Stable Marriage Problem Graph from preference list
+        Create Stable Marriage Problem Graph from preference list.
         """
         ret = nx.DiGraph()
 
@@ -51,6 +51,9 @@ class GraphSolver:
         return ret
 
     def contract_graph(self, graph, man_best_point, woman_best_point):
+        """
+        Delete the points which is linked into man's best point vertical direction and linked into woman's horizontal direction.
+        """
         ret = copy.deepcopy(graph)
         delete = []
 
@@ -72,7 +75,7 @@ class GraphSolver:
 
     def create_subgraph(self, pref, graph):
         """
-        create subgraph(only woman's best and next good point) from master graph
+        Create subgraph(only woman's best and next good point) from master graph
         """
         ret = copy.deepcopy(graph)
 
@@ -84,32 +87,39 @@ class GraphSolver:
 
         return ret
 
-    def reflesh_preference(self, pref, delete):
-        ret = copy.deepcopy(pref)
+    def reflesh_preference(self, old_pref, delete):
+        """
+        Delete any points from preference list and reflesh preference rank.
+        """
+        new_pref = copy.deepcopy(old_pref)
 
         for d in delete:
             d_i = d / self.size
             d_j = d % self.size
 
-            for i, man_row in enumerate(ret[0]):
+            for i, man_row in enumerate(new_pref[0]):
                 if i == d_i:
                     for j, rank in enumerate(man_row):
                         if j == d_j:
-                            ret[0][i][j] = float('nan')
-                        elif rank > pref[0][d_i][d_j]:
-                            ret[0][i][j] -= 1
+                            old_pref[0][i][j] = float('nan')
+                        elif rank > old_pref[0][d_i][d_j]:
+                            old_pref[0][i][j] -= 1
 
-            for i, woman_row in enumerate(ret[1]):
+            for i, woman_row in enumerate(new_pref[1]):
                 if i == d_j:
                     for j, rank in enumerate(woman_row):
                         if j == d_i:
                             ret[1][i][j] = float('nan')
-                        elif rank > pref[1][d_j][d_i]:
+                        elif rank > old_pref[1][d_j][d_i]:
                             ret[1][i][j] -= 1
 
-        return ret
+        return new_pref
 
     def how_many_stable_matching(self):
+        """
+        Count the stable matching from the member's preference list.
+        """
+
         pref = copy.deepcopy(self.preference)
         i = 1
 
