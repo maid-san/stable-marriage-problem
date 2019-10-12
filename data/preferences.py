@@ -1,4 +1,5 @@
-from create_graph import run
+from create_graph import GraphSolver
+from feature import calc_feature
 
 nan = float('nan')
 preferences = [
@@ -6950,14 +6951,17 @@ preferences = [
     ]
 ]
 
-"""
-result = [0] * 10
 for i, preference in enumerate(preferences):
-    print("P(4, " + str(i) + "): " + str(run(preference)))
-    result[run(preference) - 1] += 1
+    a, b = calc_feature(preference)
+    print("P(4, %d)'s feature: (%f, %f)" % (i, a, b))
 
-print("------- RESULT -------")
-for i, r in enumerate(result):
-    print(str(i + 1) + ": " + str(r))
-"""
-print(run(preferences[459]))
+
+# result = [0] * 10
+# for i, preference in enumerate(preferences):
+#     print("P(4, " + str(i) + "): " + str(run(preference)))
+#     result[run(preference) - 1] += 1
+
+# print("------- RESULT -------")
+# for i, r in enumerate(result):
+#     print(str(i + 1) + ": " + str(r))
+# print(run(preferences[459]))

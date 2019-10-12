@@ -94,24 +94,24 @@ class GraphSolver:
         new_pref = copy.deepcopy(old_pref)
 
         for d in delete:
-            d_i = d / self.size
+            d_i = d // self.size
             d_j = d % self.size
 
             for i, man_row in enumerate(new_pref[0]):
                 if i == d_i:
                     for j, rank in enumerate(man_row):
                         if j == d_j:
-                            old_pref[0][i][j] = float('nan')
+                            new_pref[0][i][j] = float('nan')
                         elif rank > old_pref[0][d_i][d_j]:
-                            old_pref[0][i][j] -= 1
+                            new_pref[0][i][j] -= 1
 
             for i, woman_row in enumerate(new_pref[1]):
                 if i == d_j:
                     for j, rank in enumerate(woman_row):
                         if j == d_i:
-                            ret[1][i][j] = float('nan')
+                            new_pref[1][i][j] = float('nan')
                         elif rank > old_pref[1][d_j][d_i]:
-                            ret[1][i][j] -= 1
+                            new_pref[1][i][j] -= 1
 
         return new_pref
 
@@ -139,18 +139,19 @@ class GraphSolver:
         return i
 
 # Test Code
-pref = [
-            [
-                [1, 2, 3],
-                [3, 1, 2],
-                [3, 2, 1]
-            ],
-            [
-                [3, 1, 2],
-                [1, 3, 2],
-                [3, 1, 2]
-            ]
-        ]
+# pref = [
+#             [
+#                 [3, 1, 2],
+#                 [1, 3, 2],
+#                 [3, 1, 2]
 
-gs = GraphSolver(pref)
-print("Matching: " + str(gs.how_many_stable_matching()))
+#             ],
+#             [
+#                 [1, 2, 3],
+#                 [3, 1, 2],
+#                 [3, 2, 1]
+#             ]
+#         ]
+
+# gs = GraphSolver(pref)
+# print("Matching: " + str(gs.how_many_stable_matching()))

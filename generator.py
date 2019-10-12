@@ -1,22 +1,31 @@
 import numpy as np
 import itertools
-def gen(n):
-    """
-    generate the table of stable marriage problem
+import os
 
-    e.g.) n = 3
-    `ret[a][b][c] = N` means "b loves c the N-th".
-    `(a=0)` -> b is woman, `(a=1)` -> b is man
-    """
-    w = np.empty((0, n), int)
-    m = np.empty((0, n), int)
+def create_instances_file(n):
+    d = {key:chr(i + 65) for i, key in enumerate(itertools.permutations([i + 1 for i in range(n)]))}
 
-    for i in range(n):
-        x = np.arange(n)
-        w = np.vstack((w, np.random.permutation(x)))
-        m = np.vstack((m, np.random.permutation(x)))
+    with open("./tmp.txt", mode='w') as f:
+        for instance in itertools.product(itertools.permutations([i + 1 for i in range(n)]), repeat=n*2 - 1):
+            instance = np.insert(np.array(instance), 0, [i + 1 for i in range(n)])
+            for i in std(instance.reshape(2, n, n)):
+                for j in i:
+                    f.write(d[tuple(j.tolist())])
+            f.write("\n")
 
-    return np.stack((w, m))
+    os.system(f"cat tmp.txt | sort | uniq > size{n}_instances_a.txt")
+    os.system(f"rm tmp.txt")
+
+def create_table(alphabets):
+    size = len(alphabets) / 2
+    d = {chr(i + 65):data for i, data in enumerate(itertools.permutations([i + 1 for i in range(size)]))}
+
+    ret = [[[0 for i in range(size)] for j in range(size)] for k in range(2)]
+    for i in range(2):
+        for j in range(size):
+            ret[i][j] = list(d[alphabets[i*2 + j]])
+
+    return ret
 
 def comp(lhs, rhs):
     for l, r in zip(lhs, rhs):
@@ -26,7 +35,7 @@ def comp(lhs, rhs):
             return False
     return False
 
-def std(table):
+def std_impl(table):
     n = np.shape(table)[1]
 
     res = np.copy(table)
@@ -50,3 +59,14 @@ def std(table):
                 res = candidate
 
     return res
+
+def std(table):
+    tmp1 = std_impl(table)
+
+    table[0], table[1] = table[1], np.copy(table[0])
+    tmp2 = std_impl(table)
+
+    if comp(tmp1.flatten(), tmp2.flatten()):
+        return tmp1
+    else:
+        return tmp2
