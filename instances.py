@@ -2,7 +2,7 @@ import numpy as np
 import itertools
 import os
 
-class InstanceCreator:
+class InstanceFileCreator:
     def create_instances_file(self, n):
         d = {key:chr(i + 65) for i, key in enumerate(itertools.permutations([i + 1 for i in range(n)]))}
 
@@ -60,13 +60,14 @@ class InstanceCreator:
         copied[0], copied[1] = copied[1], np.copy(copied[0])
         return is_std_impl(copied, reference)
 
-def create_table(alphabets):
-    size = len(alphabets) / 2
-    d = {chr(i + 65):data for i, data in enumerate(itertools.permutations([i + 1 for i in range(size)]))}
+class TableCreator:
+    def create_table(self, alphabets):
+        size = len(alphabets) / 2
+        d = {chr(i + 65):data for i, data in enumerate(itertools.permutations([i + 1 for i in range(size)]))}
 
-    ret = [[[0 for i in range(size)] for j in range(size)] for k in range(2)]
-    for i in range(2):
-        for j in range(size):
-            ret[i][j] = list(d[alphabets[i*2 + j]])
+        ret = [[[0 for i in range(size)] for j in range(size)] for k in range(2)]
+        for i in range(2):
+            for j in range(size):
+                ret[i][j] = list(d[alphabets[i*2 + j]])
 
-    return ret
+        return ret

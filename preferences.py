@@ -1,6 +1,5 @@
 nan = float('nan')
 preferences = [
-
     # P(4, 0)
     [
         [
