@@ -27,6 +27,9 @@ class GraphSolver:
 
         return ret
 
+    def is_decomposed(self, graph):
+        return not nx.is_weakly_connected(graph)
+
     def is_subset(self, list1, list2):
         return set(list1).issubset(list2)
 
@@ -145,9 +148,7 @@ class GraphSolver:
         while True:
             graph    = self.create_graph(pref)
             subgraph = self.create_subgraph(pref, graph)
-            cycle = list(nx.simple_cycles(subgraph))
-            rotations = [c for c in cycle if self.is_rotation(pref, c) == True]
-            print(rotations)
+            rotations = [c for c in list(nx.simple_cycles(subgraph)) if self.is_rotation(pref, c) == True]
             if len(rotations) == 0:
                 break
             delete_point = list(set(rotations[0]) & set(self.get_points(pref, 1, 1)))
