@@ -7,8 +7,6 @@ def calc_latin_feature (table):
     number = 0
     for i in range(n):
         for j in range(n):
-            # f = lambda x: 0 if np.isnan(x) else x
-
             a = table[0][i][j]
             b = table[1][i][j]
 
