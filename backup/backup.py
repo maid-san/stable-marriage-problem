@@ -19,3 +19,23 @@ def is_std_impl(table, reference):
             return False
 
     return True
+
+def get_man_best_point(self, pref):
+    ret = []
+
+    for number, man_row in enumerate(pref[0]):
+        for i, rank in enumerate(man_row):
+            if rank == 1:
+                ret.append(number * self.size + i)
+
+    return ret
+
+def get_woman_best_point(self, pref):
+    ret = []
+
+    for number, woman_row in enumerate(pref[1]):
+        for i, rank in enumerate(woman_row):
+            if rank == 1:
+                ret.append(number + i * self.size)
+
+    return ret

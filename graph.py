@@ -8,29 +8,10 @@ class GraphSolver:
         self.preference = pref
         self.size = len(pref[0][0])
 
-    def get_man_best_point(self, pref):
-        ret = []
-
-        for number, man_row in enumerate(pref[0]):
-            for i, rank in enumerate(man_row):
-                if rank == 1:
-                    ret.append(number * self.size + i)
-
-        return ret
-
-    def get_woman_best_point(self, pref):
-        ret = []
-
-        for number, woman_row in enumerate(pref[1]):
-            for i, rank in enumerate(woman_row):
-                if rank == 1:
-                    ret.append(number + i * self.size)
-
-        return ret
-
     def get_points(self, pref, sex, tgt):
         """
         sex: 0=man, 1=woman
+        tgt: target rank
         """
         ret = []
 
@@ -158,7 +139,7 @@ class GraphSolver:
         pref = copy.deepcopy(self.preference)
         i = 1
 
-        _, delete_point = self.contract_graph(self.create_graph(pref), self.get_man_best_point(pref), self.get_woman_best_point(pref))
+        _, delete_point = self.contract_graph(self.create_graph(pref), self.get_points(pref, 0, 1), self.get_points(pref, 1, 1))
         pref = self.reflesh_preference(pref, delete_point)
 
         while True:
@@ -169,7 +150,7 @@ class GraphSolver:
             print(rotations)
             if len(rotations) == 0:
                 break
-            delete_point = list(set(rotations[0]) & set(self.get_woman_best_point(pref)))
+            delete_point = list(set(rotations[0]) & set(self.get_points(pref, 1, 1)))
             pref = self.reflesh_preference(pref, delete_point)
 
             i += len(rotations)
