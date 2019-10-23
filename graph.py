@@ -28,6 +28,37 @@ class GraphSolver:
 
         return ret
 
+    def get_points(self, pref, sex, tgt):
+        """
+        sex: 0=man, 1=woman
+        """
+        ret = []
+
+        for number, row in enumerate(pref[sex]):
+            for i, rank in enumerate(row):
+                if rank == tgt:
+                    if sex == 0:
+                        ret.append(number * self.size + i)
+                    elif sex == 1:
+                        ret.append(number + i * self.size)
+                    else:
+                        return
+
+        return ret
+
+    def is_subset(self, list1, list2):
+        return set(list1).issubset(list2)
+
+    def is_rotation(self, pref, cycle):
+        if len(cycle) % 2 != 0:
+            return False
+
+        woman_best_points = self.get_points(pref, 1, 1)
+        woman_next_points = self.get_points(pref, 1, 2)
+
+        return self.is_subset(cycle[0::2], woman_best_points) and self.is_subset(cycle[1::2], woman_next_points) or \
+               self.is_subset(cycle[1::2], woman_best_points) and self.is_subset(cycle[0::2], woman_next_points)
+
     def create_graph(self, pref):
         """
         Create Stable Marriage Problem Graph from preference list.
@@ -40,6 +71,8 @@ class GraphSolver:
                 for j, rank_j in enumerate(man_row):
                     if rank_i > rank_j:
                         ret.add_edge(number * self.size + i, number * self.size + j)
+                    if rank_j == 1:
+                        ret.add_node(number * self.size + j)
 
         # Add edge vertical(woman) direction
         for number, woman_row in enumerate(pref[1]):
@@ -47,6 +80,8 @@ class GraphSolver:
                 for j, rank_j in enumerate(woman_row):
                     if rank_i > rank_j:
                         ret.add_edge(number + i * self.size, number + j * self.size)
+                    if rank_j == 1:
+                        ret.add_node(number + j * self.size)
 
         return ret
 
@@ -129,11 +164,13 @@ class GraphSolver:
         while True:
             graph    = self.create_graph(pref)
             subgraph = self.create_subgraph(pref, graph)
-            cycles = list(nx.simple_cycles(subgraph))
-            if len(cycles) == 0:
+            cycle = list(nx.simple_cycles(subgraph))
+            rotations = [c for c in cycle if self.is_rotation(pref, c) == True]
+            print(rotations)
+            if len(rotations) == 0:
                 break
-            delete_point = list(set(cycles[0]) & set(self.get_woman_best_point(pref)))
+            delete_point = list(set(rotations[0]) & set(self.get_woman_best_point(pref)))
             pref = self.reflesh_preference(pref, delete_point)
 
-            i += len(cycles)
+            i += len(rotations)
         return i
