@@ -97,14 +97,16 @@ class GraphSolver:
         Create subgraph(only woman's best and next good point) from master graph
         """
         ret = copy.deepcopy(graph)
+        delete = []
 
         for number, woman_row in enumerate(pref[1]):
             for i, rank in enumerate(woman_row):
                 if not math.isnan(rank):
                     if rank != 1 and rank != 2:
+                        delete.append(number + i * self.size)
                         ret.remove_node(number + i * self.size)
 
-        return ret
+        return ret, delete
 
     def reflesh_preference(self, old_pref, delete):
         """
@@ -132,27 +134,42 @@ class GraphSolver:
                         elif rank > old_pref[1][d_j][d_i]:
                             new_pref[1][i][j] -= 1
 
+            old_pref = copy.deepcopy(new_pref)
+
         return new_pref
+
+    def find_rotations(self, pref):
+        graph = self.create_graph(pref)
+        subgraph, _ = self.create_subgraph(pref, graph)
+        rotations = [c for c in list(nx.simple_cycles(subgraph)) if self.is_rotation(pref, c) == True]
+
+        return rotations
 
     def how_many_stable_matching(self):
         """
         Count the stable matching from the member's preference list.
         """
-
         pref = copy.deepcopy(self.preference)
-        i = 1
+        res = 1
 
         _, delete_point = self.contract_graph(self.create_graph(pref), self.get_points(pref, 0, 1), self.get_points(pref, 1, 1))
         pref = self.reflesh_preference(pref, delete_point)
 
         while True:
-            graph    = self.create_graph(pref)
-            subgraph = self.create_subgraph(pref, graph)
-            rotations = [c for c in list(nx.simple_cycles(subgraph)) if self.is_rotation(pref, c) == True]
+            rotations = self.find_rotations(pref)
+            # print(f"rotations: {rotations}")
+
             if len(rotations) == 0:
                 break
+
+            # For Output
+            # for rotation in rotations:
+            #    delete_point = list(set(rotation) & set(self.get_points(pref, 1, 1)))
+            #    print(self.reflesh_preference(pref, delete_point))
+            #    res += 1
+
             delete_point = list(set(rotations[0]) & set(self.get_points(pref, 1, 1)))
             pref = self.reflesh_preference(pref, delete_point)
+            res += len(rotations)
 
-            i += len(rotations)
-        return i
+        return res
