@@ -150,26 +150,27 @@ class GraphSolver:
         Count the stable matching from the member's preference list.
         """
         pref = copy.deepcopy(self.preference)
-        res = 1
+        number = 1
+        rotations = []
 
         _, delete_point = self.contract_graph(self.create_graph(pref), self.get_points(pref, 0, 1), self.get_points(pref, 1, 1))
         pref = self.reflesh_preference(pref, delete_point)
 
         while True:
-            rotations = self.find_rotations(pref)
-            # print(f"rotations: {rotations}")
-
-            if len(rotations) == 0:
+            tmp = self.find_rotations(pref)
+            if len(tmp) == 0:
                 break
 
+            # print(f"Rotation: {tmp}")
+
             # For Output
-            # for rotation in rotations:
-            #    delete_point = list(set(rotation) & set(self.get_points(pref, 1, 1)))
-            #    print(self.reflesh_preference(pref, delete_point))
-            #    res += 1
+            # for rotation in tmp:
+            #     delete_point = list(set(rotation) & set(self.get_points(pref, 1, 1)))
+            #     print(self.reflesh_preference(pref, delete_point))
 
-            delete_point = list(set(rotations[0]) & set(self.get_points(pref, 1, 1)))
+            delete_point = list(set(tmp[0]) & set(self.get_points(pref, 1, 1)))
             pref = self.reflesh_preference(pref, delete_point)
-            res += len(rotations)
+            number += len(tmp)
+            rotations.extend(tmp)
 
-        return res
+        return number, rotations
