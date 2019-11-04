@@ -156,17 +156,21 @@ class GraphSolver:
         _, delete_point = self.contract_graph(self.create_graph(pref), self.get_points(pref, 0, 1), self.get_points(pref, 1, 1))
         pref = self.reflesh_preference(pref, delete_point)
 
+        print("Contracting:")
+        self.output_graph(pref)
+
         while True:
             tmp = self.find_rotations(pref)
             if len(tmp) == 0:
                 break
 
-            # print(f"Rotation: {tmp}")
+            print(f"Rotation: {tmp}")
 
             # For Output
-            # for rotation in tmp:
-            #     delete_point = list(set(rotation) & set(self.get_points(pref, 1, 1)))
-            #     print(self.reflesh_preference(pref, delete_point))
+            for rotation in tmp:
+                delete_point = list(set(rotation) & set(self.get_points(pref, 1, 1)))
+                self.output_graph(self.reflesh_preference(pref, delete_point))
+                print()
 
             delete_point = list(set(tmp[0]) & set(self.get_points(pref, 1, 1)))
             pref = self.reflesh_preference(pref, delete_point)
@@ -174,3 +178,21 @@ class GraphSolver:
             rotations.extend(tmp)
 
         return number, rotations
+
+    def output_graph(self, pref):
+        n = np.shape(pref)[1]
+
+        for i in range(n):
+            for j in range(n):
+                a = pref[0][i][j]
+                b = pref[1][j][i]
+
+                if np.isnan(a):
+                    a = "n"
+                if np.isnan(b):
+                    b = "n"
+
+                print(f"({a}, {b})", end="")
+            print()
+
+        return
