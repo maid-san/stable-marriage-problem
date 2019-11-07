@@ -156,21 +156,21 @@ class GraphSolver:
         _, delete_point = self.contract_graph(self.create_graph(pref), self.get_points(pref, 0, 1), self.get_points(pref, 1, 1))
         pref = self.reflesh_preference(pref, delete_point)
 
-        print("Contracting:")
-        self.output_graph(pref)
+        # print("Contracting:")
+        # self.output_graph(pref)
+        # print()
 
         while True:
             tmp = self.find_rotations(pref)
             if len(tmp) == 0:
                 break
 
-            print(f"Rotation: {tmp}")
-
             # For Output
-            for rotation in tmp:
-                delete_point = list(set(rotation) & set(self.get_points(pref, 1, 1)))
-                self.output_graph(self.reflesh_preference(pref, delete_point))
-                print()
+            # print(f"Rotation: {tmp}")
+            # for rotation in tmp:
+            #     delete_point = list(set(rotation) & set(self.get_points(pref, 1, 1)))
+            #     self.output_graph(self.reflesh_preference(pref, delete_point))
+            #     print()
 
             delete_point = list(set(tmp[0]) & set(self.get_points(pref, 1, 1)))
             pref = self.reflesh_preference(pref, delete_point)
