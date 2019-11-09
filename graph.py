@@ -8,6 +8,9 @@ class GraphSolver:
         self.preference = pref
         self.size = len(pref[0][0])
 
+    def is_subset(self, list1, list2):
+        return set(list1).issubset(list2)
+
     def get_points(self, pref, sex, tgt):
         """
         sex: 0=man, 1=woman
@@ -26,22 +29,6 @@ class GraphSolver:
                         return
 
         return ret
-
-    def is_decomposed(self, graph):
-        return not nx.is_weakly_connected(graph)
-
-    def is_subset(self, list1, list2):
-        return set(list1).issubset(list2)
-
-    def is_rotation(self, pref, cycle):
-        if len(cycle) % 2 != 0:
-            return False
-
-        woman_best_points = self.get_points(pref, 1, 1)
-        woman_next_points = self.get_points(pref, 1, 2)
-
-        return self.is_subset(cycle[0::2], woman_best_points) and self.is_subset(cycle[1::2], woman_next_points) or \
-               self.is_subset(cycle[1::2], woman_best_points) and self.is_subset(cycle[0::2], woman_next_points)
 
     def create_graph(self, pref):
         """
@@ -138,12 +125,25 @@ class GraphSolver:
 
         return new_pref
 
+    def is_rotation(self, pref, cycle):
+        if len(cycle) % 2 != 0:
+            return False
+
+        woman_best_points = self.get_points(pref, 1, 1)
+        woman_next_points = self.get_points(pref, 1, 2)
+
+        return self.is_subset(cycle[0::2], woman_best_points) and self.is_subset(cycle[1::2], woman_next_points) or \
+               self.is_subset(cycle[1::2], woman_best_points) and self.is_subset(cycle[0::2], woman_next_points)
+
     def find_rotations(self, pref):
         graph = self.create_graph(pref)
         subgraph, _ = self.create_subgraph(pref, graph)
         rotations = [c for c in list(nx.simple_cycles(subgraph)) if self.is_rotation(pref, c) == True]
 
         return rotations
+
+    def is_decomposed(self, graph):
+        return not nx.is_weakly_connected(graph)
 
     def how_many_stable_matching(self, output=False):
         """
