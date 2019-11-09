@@ -23,7 +23,8 @@ def output_csv_file():
             nodes    = count_nodes(preference)
             latin1   = calc_latin_feature(preference)
             latin2   = calc_latin_feature_2(preference)
-            latin3   = calc_latin_feature_3(preference)
             sr, _    = find_similar_relation(preference, 1, 1)
 
-            print(f"{i},{matchings},{nodes},{latin1},{latin2},{latin3},{sr}")
+            print(f"{i},{matchings},{nodes},{latin1},{latin2},{sr}")
+
+output_csv_file()

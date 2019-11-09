@@ -39,25 +39,6 @@ def calc_latin_feature_2(table):
 
     return np.var(arr)
 
-def calc_latin_feature_3(table):
-    n = np.shape(table)[1]
-
-    arr = []
-
-    for i in range(n):
-        tmp = []
-        count_nan = len(table[1][i])
-        for j in range(n):
-            a = table[1][i][j]
-            b = table[0][j][i]
-
-            if np.isnan(a) or np.isnan(b):
-                continue
-            tmp.append(np.abs(a + b) - (n - count_nan + 1))
-        arr.append(np.var(tmp))
-
-    return np.mean(arr)
-
 def find_similar_relation(pref, sex, rank):
     n = np.shape(pref)[1]
     if rank >= n:
